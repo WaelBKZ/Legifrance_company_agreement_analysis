@@ -274,7 +274,7 @@ class ScrapAgreement:
             except KeyError:  # If an agreement cannot be fetched due to an "Le nombre de résultat retourné par le
                 # moteur de recherche n'est pas égal à 1." error
 
-                print(f"Agreement {agreement_id} information couldn't be fetched at all.")
+                print(f"Agreement {agreement_id}'s information couldn't be fetched at all.")
 
                 dateDepot = None
                 self.list_agreement[i]['dateDepot'] = dateDepot
