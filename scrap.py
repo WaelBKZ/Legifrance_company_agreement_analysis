@@ -1,3 +1,17 @@
+import sys
+import requests
+import datetime
+import time
+import pandas as pd
+
+from selenium import webdriver
+from bs4 import BeautifulSoup
+try:
+    from simplejson.errors import JSONDecodeError
+except ImportError:
+    from json.decoder import JSONDecodeError
+
+
 class ScrapAgreement:
     """A class for creating scrappers on Legifrance API.
     """
@@ -189,8 +203,9 @@ class ScrapAgreement:
             headers = {'Authorization': f'Bearer {self.token_legifrance}'}
             data = {"id": agreement_id}
             count_requests_fail = 0
-            bool_break = 1
-            while bool_break:
+            bool_break = 1 #When set to 1, the while loop below won't break unless we get a positive result or the user
+            # decides to stop the algorithm.
+            while bool_break :
                 response = requests.post(
                     'https://sandbox-api.piste.gouv.fr/dila/legifrance-beta/lf-engine-app/consult/acco',
                     headers=headers,
@@ -276,52 +291,6 @@ class ScrapAgreement:
 
                 print(f"Agreement {agreement_id}'s information couldn't be fetched at all.")
 
-                dateDepot = None
-                self.list_agreement[i]['dateDepot'] = dateDepot
-
-                dateDiffusion = None
-                self.list_agreement[i]['dateDiffusion'] = dateDiffusion
-
-                dateEffet = None
-                self.list_agreement[i]['dateEffet'] = dateEffet
-
-                dateFin = None
-                self.list_agreement[i]['dateFin'] = dateFin
-
-                dateMaj = None
-                self.list_agreement[i]['dateMaj'] = dateMaj
-
-                dateTexte = None
-                self.list_agreement[i]['dateTexte'] = dateTexte
-
-                entreprise = None
-                self.list_agreement[i]['entreprise'] = entreprise
-
-                siret = None
-                self.list_agreement[i]['siret'] = siret
-
-                size, size_category = (None, None)
-                self.list_agreement[i]['size'] = size
-                self.list_agreement[i]['size_category'] = size_category
-
-                syndicats = None
-                self.list_agreement[i]['syndicats'] = syndicats
-
-                secteur = None
-                self.list_agreement[i]['secteur'] = secteur
-
-                nature = None
-                self.list_agreement[i]['nature'] = nature
-
-                themes = None
-                self.list_agreement[i]['themes'] = themes
-
-                codeNAF = None
-                self.list_agreement[i]['codeNAF'] = codeNAF
-
-                contenu = None
-                self.list_agreement[i]['contenu'] = contenu
-
             if user_feedback == True:
                 self.count_1 += 1
                 count_2 += 1
@@ -329,45 +298,45 @@ class ScrapAgreement:
                     print(f"We're at {self.count_1 / n * 100}%.")
                     count_2 = 0
 
-    def auto_scrap(self, save_path=None, saving_format='xlsx' start_at = 0, skip_to_saving = False):
-    """Compiles all the scrapping methods in one. Does all the scrapping at once.
+    def auto_scrap(self, save_path=None, saving_format='xlsx', start_at = 0, skip_to_saving = False):
+        """Compiles all the scrapping methods in one. Does all the scrapping at once.
 
-    Args:
-        save_path (str): Path you wish the .csv database be saved to. Please remove any '\' or '/' at the end. For
-        example, it can be under the form of 'C:\User\documents\folder'.
-        saving_format (:obj:`str`, optional): 'xlsx' or 'csv'. Defaults as 'xlsx'.
-        start_at (:obj:`int`, optional): Number of the agreement you wish to start with for the scrapping. Useful
-        when your session crashed and you don't want to start again from the beginning. Defaults to 0. If set as
-        higher than 0, will automatically skip the get_all_pages_ids method as we assume you've already finished it.
-        skip_to_saving (:obj:`bool`, optional): If, as a user, you only failed when entering the saving path and do
-        not wish to relaunch the whole thing. If set as true, will directly skip to the saving part. Defaults to
-        False.
+        Args:
+            save_path (str): Path you wish the .csv database be saved to. Please remove any '\' or '/' at the end. For
+            example, it can be under the form of 'C:\User\documents\folder'.
+            saving_format (:obj:`str`, optional): 'xlsx' or 'csv'. Defaults as 'xlsx'.
+            start_at (:obj:`int`, optional): Number of the agreement you wish to start with for the scrapping. Useful
+            when your session crashed and you don't want to start again from the beginning. Defaults to 0. If set as
+            higher than 0, will automatically skip the get_all_pages_ids method as we assume you've already finished it.
+            skip_to_saving (:obj:`bool`, optional): If, as a user, you only failed when entering the saving path and do
+            not wish to relaunch the whole thing. If set as True, will directly skip to the saving part. Defaults to
+            False.
 
-    Raises:
-        JSONDecodeError: An error occurs while you are trying to access the Legifrance API. The json decoding
-        is not actually the issue, it is rather that the API communication failed and that you most likely need
-        to get a fresh token on the API. This error can only be raised if the user decides to exit the program (by
-        entering 'Enter' when they are asked to).
-        FileNotFoundError: You entered a wrong save_path.
-    """
-    time1 = time.time()
-    if skip_to_saving == False:
-        if start_at != 0:
-            self.get_all_pages_ids()
-            print("All pages IDs fetched.")
-        self.get_agreements_infos(start_at=start_at)
-    self.df = pd.DataFrame(self.list_agreement)
-    try:
-        if saving_format == 'xlsx':
-            self.df.to_excel(save_path + f'/legifrance_database_{self.agree_subject}_{self.agree_type}.{saving_format}')
-        elif saving_format == 'csv':
-            self.df.to_csv(save_path + f'/legifrance_database_{self.agree_subject}_{self.agree_type}.{saving_format}')
-        else:
-            raise ValueError("Please choose 'xlsx' or 'csv' as the saving_format for your scrapped database.")
+        Raises:
+            JSONDecodeError: An error occurs while you are trying to access the Legifrance API. The json decoding
+            is not actually the issue, it is rather that the API communication failed and that you most likely need
+            to get a fresh token on the API. This error can only be raised if the user decides to exit the program (by
+            entering 'Enter' when they are asked to).
+            FileNotFoundError: You entered a wrong save_path.
+        """
+        time1 = time.time()
+        if skip_to_saving == False:
+            if start_at != 0:
+                self.get_all_pages_ids()
+                print("All pages IDs fetched.")
+            self.get_agreements_infos(start_at=start_at)
+        self.df = pd.DataFrame(self.list_agreement)
+        try:
+            if saving_format == 'xlsx':
+                self.df.to_excel(save_path + f'/legifrance_database_{self.agree_subject}_{self.agree_type}.{saving_format}')
+            elif saving_format == 'csv':
+                self.df.to_csv(save_path + f'/legifrance_database_{self.agree_subject}_{self.agree_type}.{saving_format}')
+            else:
+                raise ValueError("Please choose 'xlsx' or 'csv' as the saving_format for your scrapped database.")
 
-    except FileNotFoundError:
-        raise FileNotFoundError('Please enter a valid save_path for your file. You do not need to relaunch the '
-                                'whole process, please set skip_to_saving to True in the attributes to directly skip'
-                                ' to saving the dataframe.')
+        except FileNotFoundError:
+            raise FileNotFoundError('Please enter a valid save_path for your file. You do not need to relaunch the '
+                                    'whole process, please set skip_to_saving to True in the attributes to directly skip'
+                                    ' to saving the dataframe.')
 
-    print(f"100%.\nScrapping done. It took {time.time() - time1} seconds.")
+        print(f"100%.\nScrapping done. It took {time.time() - time1} seconds.")
