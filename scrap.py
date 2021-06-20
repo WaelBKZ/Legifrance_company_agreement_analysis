@@ -288,7 +288,6 @@ class ScrapAgreement:
 
             except KeyError:  # If an agreement cannot be fetched due to an "Le nombre de résultat retourné par le
                 # moteur de recherche n'est pas égal à 1." error
-
                 print(f"Agreement {agreement_id}'s information couldn't be fetched at all.")
 
             if user_feedback == True:
