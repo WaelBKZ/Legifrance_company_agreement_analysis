@@ -18,14 +18,12 @@ class ScrapAgreement:
 
     def __init__(self, agree_subject='tele', agree_type='title', token_legifrance=None):
         """ScrapAgreement class constructor.
-
         Args:
             agree_subject (str): Must be 'tele' for scrapping Telecommuting agreements or 'equa' for Professional
             Equality agreements.
             agree_type (str): Must be 'title' for scrapping agreements according to their title or 'theme' for scrapping
             them according to their theme.
             token_legifrance: Token obtained on Legifrance API. More details on how to get it in the Readme file.
-
         Raises:
             ValueError: If the agree_subject or agree_type are not in str format such as described above. If the user
             has not entered a valid token_legifrance.
@@ -79,10 +77,8 @@ class ScrapAgreement:
     @staticmethod
     def get_a_page(soup):
         """Gets a list of dictionaries of agreements IDs and links on a given Legifrance page.
-
         Args:
             soup (BeautifulSoup object): The soup object of a given page of agreements from Legifrance.
-
         Returns:
             list: A list of dictionaries each containing an unique ID and link for each agreement on a chosen page.
         """
@@ -98,12 +94,9 @@ class ScrapAgreement:
     def get_all_pages_ids(self, n=1_000_000):
         """Generalizes ScrapAgreement.get_a_page() method to all pages on Legifrance according to the scrapping criteria
         chosen by the user (subject and type).
-
         Creates a list_agreement attribute (for your ScrapAgreement object) which consists in a list of dictionaries of
         IDs and links for each agreement.
-
         They are fetched on chronological order.
-
         Args:
             n: Maximum number of pages that will be scrapped. Is set to 1 Million by default, i.e. it fetches every page
             by default.
@@ -131,10 +124,8 @@ class ScrapAgreement:
     def get_company_size(siret):
         """Gets the size and the size category of a French company using its Siret, and by scrapping the Sirene website.
         Used website : https://www.sirene.fr/sirene/public/accueil
-
         Args:
             siret (int_or_str): Siret of the company you wish to get the size.
-
         Returns:
             str: Range of people in the company (e.g. '150 à 999 personnes').
             str: Size category of the company, according to INSEE taxonomy ('PME', 'ETI' or 'GE'). For more, see :
@@ -157,10 +148,8 @@ class ScrapAgreement:
     @staticmethod
     def date_raw_to_dmy(date_raw):
         """Converts a timestamp to a day-month-Year date.
-
         Args:
             date_raw (int): timestamp (e.g. 1624028410).
-
         Returns:
             str: date with d-m-Y format.
         """
@@ -169,21 +158,16 @@ class ScrapAgreement:
 
     def get_agreements_infos(self, user_feedback=True, start_at=0):
         """Gets a complete set of information for each agreement on the chosen scope of agreements.
-
         Information that are gathered for each agreement are : dateDepot, dateDiffusion, dateEffet, dateFin, dateMaj,
         dateTexte, company name, siret, size, size category, union, sector, nature, themes, NAF code and its content.
-
         It enriches the list_agreement attribute with additional information using the Legifrance API:
         https://developer.aife.economie.gouv.fr/.
-
         Should only be ran after ScrapAgreement.get_all_pages_ids.
-
         Args:
             user_feedback (:obj:`bool`, optional): Set to True if the user wishes to have feedback on the advancement
             of the scrapping. Defaults to True.
             start_at (:obj:`int`, optional): Number of the agreement you wish to start with for the scrapping. Useful
             when your session crashed and you don't want to start again from the beginning. Defaults to 0.
-
         Raises:
             JSONDecodeError: An error occurs while you are trying to access the Legifrance API. The json decoding
             is not actually the issue, it is rather that the API communication failed and that you most likely need
@@ -299,7 +283,6 @@ class ScrapAgreement:
 
     def auto_scrap(self, save_path=None, saving_format='xlsx', start_at = 0, skip_to_saving = False):
         """Compiles all the scrapping methods in one. Does all the scrapping at once.
-
         Args:
             save_path (str): Path you wish the .csv database be saved to. Please remove any '\' or '/' at the end. For
             example, it can be under the form of 'C:/User/documents/folder'.
@@ -310,7 +293,6 @@ class ScrapAgreement:
             skip_to_saving (:obj:`bool`, optional): If, as a user, you only failed when entering the saving path and do
             not wish to relaunch the whole thing. If set as True, will directly skip to the saving part. Defaults to
             False.
-
         Raises:
             JSONDecodeError: An error occurs while you are trying to access the Legifrance API. The json decoding
             is not actually the issue, it is rather that the API communication failed and that you most likely need
@@ -320,7 +302,7 @@ class ScrapAgreement:
         """
         time1 = time.time()
         if skip_to_saving == False:
-            if start_at != 0:
+            if start_at == 0:
                 self.get_all_pages_ids()
                 print("All pages IDs fetched.")
             self.get_agreements_infos(start_at=start_at)
