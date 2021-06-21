@@ -302,7 +302,7 @@ class ScrapAgreement:
 
         Args:
             save_path (str): Path you wish the .csv database be saved to. Please remove any '\' or '/' at the end. For
-            example, it can be under the form of 'C:\User\documents\folder'.
+            example, it can be under the form of 'C:/User/documents/folder'.
             saving_format (:obj:`str`, optional): 'xlsx' or 'csv'. Defaults as 'xlsx'.
             start_at (:obj:`int`, optional): Number of the agreement you wish to start with for the scrapping. Useful
             when your session crashed and you don't want to start again from the beginning. Defaults to 0. If set as
