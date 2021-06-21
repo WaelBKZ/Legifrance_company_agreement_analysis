@@ -16,7 +16,7 @@ Go on French government Open Data website https://developer.aife.economie.gouv.f
 Connect on your account, click on the *"Applications"* tab on the top-right corner of the screen. On this page, you should see that a Sandbox application has already been created : ![Create an application](https://i.imgur.com/tJmzhhM.png)  
 Note : It is possible that this application doesn't appear. If that's the case, log-out and log-in again and it should appear.
   
-Now, click on the application, then click on "Edit the application".![enter image description here](https://i.imgur.com/Yel8FhB.png)
+Now, click on the application, then click on "Edit application".![enter image description here](https://i.imgur.com/Yel8FhB.png)
 Now, scroll down and check the two boxes in front of **'DILA - Légifrance Beta'** on the multiple choice table (see the screenshot below). ![tos checkboxes](https://i.imgur.com/vxIGJPJ.png)
 You don't have to check the other boxes.
 Now, click on *"Validate my ToS choices"* and then click on *"Save Application"*.
