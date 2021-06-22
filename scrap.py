@@ -396,4 +396,4 @@ if __name__ == '__main__':
     # If you entered, let's say, an invalid `save_path` and that your scrapping crashes during the saving process,
     # well...
     # Don't worry, just launch the above `auto_scrap` line in your Python console (if you opened one...) with the new
-    # `save_path`, and by setting the skip_to_saving` parameter to True.
+    # `save_path`, and by setting the `skip_to_saving` parameter to True.
