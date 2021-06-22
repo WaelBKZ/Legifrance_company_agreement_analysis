@@ -18,7 +18,6 @@ class ScrapAgreement:
 
     def __init__(self, agree_subject='tele', agree_type='title', token_legifrance=None):
         """ScrapAgreement class constructor.
-
         Parameters
         ----------
         agree_subject : str
@@ -29,13 +28,11 @@ class ScrapAgreement:
             their theme. (Default value = 'title')
         token_legifrance : int_or_str
             Token obtained on Legifrance API. More details on how to get it in the Readme file. (Default value = None)
-
         Raises
         ------
         ValueError
             If the agree_subject or agree_type are not in str format such as described above. Or if the user has not
             entered a valid `token_legifrance`.
-
         """
         self.agree_subject = agree_subject
         self.agree_type = agree_type
@@ -87,17 +84,14 @@ class ScrapAgreement:
     @staticmethod
     def get_a_page(soup):
         """Gets a list of dictionaries of agreements IDs and links on a given Legifrance page.
-
         Parameters
         ----------
         soup (BeautifulSoup object):
             The soup object of a given page of agreements from Legifrance.
-
         Returns
         -------
         list(dict)
             A list of dictionaries each containing an unique ID and link for each agreement on a chosen page.
-
         """
         list_agreement_page = []
         for text in soup.findAll("h2"):
@@ -111,18 +105,14 @@ class ScrapAgreement:
     def get_all_pages_ids(self, n=1_000_000):
         """Generalizes `ScrapAgreement.get_a_page()` method to all pages on Legifrance according to the scrapping
         criteria chosen by the user (subject and type).
-
         Creates a list_agreement attribute (for your ScrapAgreement object) which consists in a list of dictionaries of
         IDs and links for each agreement.
-
         They are fetched in chronological order.
-
         Parameters
         ----------
         n :
             Maximum number of pages that will be scrapped. Is set to 1 Million by default, i.e. it fetches every page by
             default. (Default value = 1_000_000)
-
         """
         if n == 1_000_000:
             # In case the user did not specify a number of page he is willing to scrap, we will automatically fetch
@@ -147,12 +137,10 @@ class ScrapAgreement:
     def get_company_size(siret):
         """Gets the size and the size category of a French company using its Siret, and by scrapping the Sirene website.
         Used website : https://www.sirene.fr/sirene/public/accueil
-
         Parameters
         ----------
         siret : int_or_str
             Siret of the company you wish to get the size.
-
         Returns
         -------
         str
@@ -160,7 +148,6 @@ class ScrapAgreement:
         str
             Size category of the company, according to INSEE taxonomy ('PME', 'ETI' or 'GE'). For more, see :
             https//www.insee.fr/fr/metadonnees/definition/c1057.
-
         """
         url_siret = f'https://www.sirene.fr/sirene/public/recherche?recherche.sirenSiret=54565020200025&amp;recherche' \
                     f'.commune=&amp;recherche.captcha=&amp;__checkbox_recherche.excludeClosed=true&amp;recherche' \
@@ -181,31 +168,28 @@ class ScrapAgreement:
     @staticmethod
     def date_raw_to_dmy(date_raw):
         """Converts a timestamp to a day-month-Year date.
-
         Parameters
         ----------
         date_raw : int
             timestamp (e.g. 1624028410).
-
         Returns
         -------
         str
             date with d-m-Y format.
-
         """
+        if date_raw < 0:
+            date_raw += 63113904000000  # 2000 years in milliseconds ; the reason is that the date is encoded as 0021
+            # for example instead of 2021.
         your_dt = datetime.datetime.fromtimestamp(int(date_raw) / 1000)  # using the local timezone
         return your_dt.strftime("%d-%m-%Y")
 
     def get_agreements_infos(self, user_feedback=True, start_at=0):
         """Gets a complete set of information for each agreement on the chosen scope of agreements.
-
         Information that are gathered for each agreement are : dateDepot, dateDiffusion, dateEffet, dateFin, dateMaj,
         dateTexte, company name, siret, size, size category, union, sector, nature, themes, NAF code and the agreement
         content.
-
         It enriches the list_agreement attribute with additional information using the Legifrance API:
         https://developer.aife.economie.gouv.fr/.
-
         Parameters
         ----------
         user_feedback : :obj:`bool`, optional
@@ -213,7 +197,6 @@ class ScrapAgreement:
         start_at : :obj:`int`, optional
             Number of the agreement you wish to start with for the scrapping. Useful when your session crashed and you
             don't want to start again from the beginning. (Default value = 0)
-
         Raises
         ------
         JSONDecodeError
@@ -221,11 +204,9 @@ class ScrapAgreement:
             issue, it is rather that the API communication failed and that you most likely need to get a fresh token on
             the API. This error can only be raised if the user decides to exit the program (by entering 'Enter' when
             they are asked to).
-
         Notes
         -----
         Should only be ran after ScrapAgreement.get_all_pages_ids.
-
         """
         n = len(self.list_agreement)
         if user_feedback:
@@ -259,6 +240,7 @@ class ScrapAgreement:
                             '(if you do not wish to refresh your token and wish to exit the scrapping, do not type '
                             'anything there and press Enter) \n')
                         if user_request != '':
+                            print('Token well received.')
                             self.token_legifrance = user_request
                             headers = {'Authorization': f'Bearer {self.token_legifrance}'}
                         else:
@@ -336,7 +318,6 @@ class ScrapAgreement:
 
     def auto_scrap(self, save_path=None, saving_format='xlsx', start_at=0, skip_to_saving=False):
         """Compiles all the scrapping methods in one. Does all the scrapping at once.
-
         Parameters
         ----------
         save_path : str
@@ -352,7 +333,6 @@ class ScrapAgreement:
         skip_to_saving : :obj:`bool`, optional
             If, as a user, you only failed when entering the saving path and do not wish to relaunch the whole thing. If
             set as True, will directly skip to the saving part. (Default value = False)
-
        Raises
         ------
         JSONDecodeError
@@ -362,7 +342,6 @@ class ScrapAgreement:
             entering 'Enter' when they are asked to).
         FileNotFoundError
             You entered a wrong save_path.
-
         """
         time1 = time.time()
         if skip_to_saving is False:
@@ -387,3 +366,34 @@ class ScrapAgreement:
                                     'skip to saving the dataframe.')
 
         print(f"100%.\nScrapping done. It took {time.time() - time1} seconds.")
+
+
+if __name__ == '__main__':
+    # arguments :
+    token_legifrance = 'YourLegifranceToken'
+    save_path = 'enter/your/path'
+    agree_subject = 'tele'
+    # agree_subject = 'equa'
+    agree_type = 'title'
+    # agree_type = 'theme'
+    chromedriver_path = 'C:/Users/your/path/to/chromedriver'  # don't write the '.exe'.
+    # download the chromedriver executable suited for your version of Chrome on : https://chromedriver.chromium.org/
+
+    # parameters; don't change anything there
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+
+    wd = webdriver.Chrome(executable_path=chromedriver_path, chrome_options=chrome_options)
+    # If you get a selenium error while it is trying to get the chromedriver executable, then just remove the
+    # 'executable_path = chromedriver_path' above, and put chromedriver.exe in the same folder as this python file.
+
+    my_scrap = ScrapAgreement(agree_subject=agree_subject, agree_type=agree_type, token_legifrance=token_legifrance)
+    my_scrap.auto_scrap(save_path=save_path, saving_format='xlsx', start_at=0, skip_to_saving=False)
+
+    # End note:
+    # If you entered, let's say, an invalid `save_path` and that your scrapping crashes during the saving process,
+    # well...
+    # Don't worry, just launch the above `auto_scrap` line in your Python console (if you opened one...) with the new
+    # `save_path`, and by setting the skip_to_saving` parameter to True.
