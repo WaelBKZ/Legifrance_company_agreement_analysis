@@ -35,6 +35,6 @@ And there you have it, your Legifrance token! Now copy it in your clipboard, it 
 
 ## Launch the scrapping
 
-- If you wish to do the scrapping on Google Colab: open  ***scrapping_notebook.ipynb*** in Google Colab and follow the instructions.
-Alternatively:
+- If you wish to do the scrapping on Google Colab: open  ***scrapping_notebook.ipynb*** in Google Colab and follow the instructions.  
+Alternatively:  
 - If you wish to do the scrapping on a local machine: open ***scrap.py*** in your IDE, enter your parameters (such as legifrance_token,...) under the `if __name__ == '__main__' :` condition at the bottom, then launch the file. (p.s : I advise you to launch the file in a Python Console (and not just Run it); if your session crashes let's say at the saving part because of an invalid `save_path`, you still could relaunch just a small part of the procedure (explained in the files) and not wait an extra 2hours for a small mistake). 
