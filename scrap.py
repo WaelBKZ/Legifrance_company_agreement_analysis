@@ -18,6 +18,7 @@ class ScrapAgreement:
 
     def __init__(self, agree_subject='tele', agree_type='title', token_legifrance=None):
         """ScrapAgreement class constructor.
+        
         Parameters
         ----------
         agree_subject : str
@@ -28,6 +29,7 @@ class ScrapAgreement:
             their theme. (Default value = 'title')
         token_legifrance : int_or_str
             Token obtained on Legifrance API. More details on how to get it in the Readme file. (Default value = None)
+            
         Raises
         ------
         ValueError
@@ -84,10 +86,12 @@ class ScrapAgreement:
     @staticmethod
     def get_a_page(soup):
         """Gets a list of dictionaries of agreements IDs and links on a given Legifrance page.
+        
         Parameters
         ----------
         soup (BeautifulSoup object):
             The soup object of a given page of agreements from Legifrance.
+            
         Returns
         -------
         list(dict)
@@ -105,9 +109,12 @@ class ScrapAgreement:
     def get_all_pages_ids(self, n=1_000_000):
         """Generalizes `ScrapAgreement.get_a_page()` method to all pages on Legifrance according to the scrapping
         criteria chosen by the user (subject and type).
+        
         Creates a list_agreement attribute (for your ScrapAgreement object) which consists in a list of dictionaries of
         IDs and links for each agreement.
+        
         They are fetched in chronological order.
+        
         Parameters
         ----------
         n :
@@ -136,11 +143,14 @@ class ScrapAgreement:
     @staticmethod
     def get_company_size(siret):
         """Gets the size and the size category of a French company using its Siret, and by scrapping the Sirene website.
+        
         Used website : https://www.sirene.fr/sirene/public/accueil
+        
         Parameters
         ----------
         siret : int_or_str
             Siret of the company you wish to get the size.
+            
         Returns
         -------
         str
@@ -168,10 +178,12 @@ class ScrapAgreement:
     @staticmethod
     def date_raw_to_dmy(date_raw):
         """Converts a timestamp to a day-month-Year date.
+        
         Parameters
         ----------
         date_raw : int
             timestamp (e.g. 1624028410).
+            
         Returns
         -------
         str
@@ -185,11 +197,14 @@ class ScrapAgreement:
 
     def get_agreements_infos(self, user_feedback=True, start_at=0):
         """Gets a complete set of information for each agreement on the chosen scope of agreements.
+        
         Information that are gathered for each agreement are : dateDepot, dateDiffusion, dateEffet, dateFin, dateMaj,
         dateTexte, company name, siret, size, size category, union, sector, nature, themes, NAF code and the agreement
         content.
+        
         It enriches the list_agreement attribute with additional information using the Legifrance API:
         https://developer.aife.economie.gouv.fr/.
+        
         Parameters
         ----------
         user_feedback : :obj:`bool`, optional
@@ -197,6 +212,7 @@ class ScrapAgreement:
         start_at : :obj:`int`, optional
             Number of the agreement you wish to start with for the scrapping. Useful when your session crashed and you
             don't want to start again from the beginning. (Default value = 0)
+            
         Raises
         ------
         JSONDecodeError
@@ -204,6 +220,7 @@ class ScrapAgreement:
             issue, it is rather that the API communication failed and that you most likely need to get a fresh token on
             the API. This error can only be raised if the user decides to exit the program (by entering 'Enter' when
             they are asked to).
+            
         Notes
         -----
         Should only be ran after ScrapAgreement.get_all_pages_ids.
@@ -318,6 +335,7 @@ class ScrapAgreement:
 
     def auto_scrap(self, save_path=None, saving_format='xlsx', start_at=0, skip_to_saving=False):
         """Compiles all the scrapping methods in one. Does all the scrapping at once.
+        
         Parameters
         ----------
         save_path : str
@@ -333,6 +351,7 @@ class ScrapAgreement:
         skip_to_saving : :obj:`bool`, optional
             If, as a user, you only failed when entering the saving path and do not wish to relaunch the whole thing. If
             set as True, will directly skip to the saving part. (Default value = False)
+            
        Raises
         ------
         JSONDecodeError
